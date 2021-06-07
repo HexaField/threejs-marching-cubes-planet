@@ -1,9 +1,8 @@
-import { AlphaFormat, BackSide, BoxBufferGeometry, BufferAttribute, BufferGeometry, Color, DataTexture, DataTexture2DArray, DepthFormat, DoubleSide, FrontSide, Mesh, MeshBasicMaterial, MeshNormalMaterial, MeshPhongMaterial, MeshStandardMaterial, RGBFormat, UnsignedByteType, Vector3 } from "three";
+import { BoxBufferGeometry, BufferAttribute, BufferGeometry, Color, DoubleSide, Mesh, MeshStandardMaterial, Vector3 } from "three";
 import { clamp } from "three/src/math/MathUtils";
 import { createMarchingCubesGeometry } from "./MarchingCubes";
 import { World } from "./World";
 import { Terrain } from "./Terrain";
-import Noise from "./Noise";
 
 const EPSILON = 0.000001
 const DEBUG = false;

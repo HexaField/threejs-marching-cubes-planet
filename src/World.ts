@@ -1,4 +1,4 @@
-import { Scene, Color, DirectionalLight, AmbientLight, PerspectiveCamera, WebGLRenderer, SphereBufferGeometry, Mesh, MeshStandardMaterial, Clock, Vector3 } from 'three';
+import { Scene, Color, DirectionalLight, AmbientLight, PerspectiveCamera, WebGLRenderer, Clock, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Terrain } from './Terrain';
     
