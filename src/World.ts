@@ -45,7 +45,7 @@ export class World {
     this.scene.add(this.dirLight);
     this.scene.add(this.ambientLight);
 
-    this.camera.position.set(1, 1, 1);
+    this.camera.position.set(2, 1.5, 2.5);
     this.camera.lookAt(0, 0, 0);
     this.controls.target = new Vector3()
 

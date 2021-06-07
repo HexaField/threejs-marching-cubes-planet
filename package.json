@@ -11,6 +11,7 @@
     "vite": "^2.3.5"
   },
   "dependencies": {
+    "open-simplex-noise": "^2.5.0",
     "three": "^0.129.0"
   }
 }
