@@ -45,7 +45,7 @@ export class World {
     this.scene.add(this.dirLight);
     this.scene.add(this.ambientLight);
 
-    this.camera.position.set(4, 3, 5);
+    this.camera.position.set(-2, 3, 7);
     this.camera.lookAt(0, 0, 0);
     this.controls.target = new Vector3()
 
@@ -77,7 +77,7 @@ export class World {
     const delta = this.clock.getDelta();
     const time = this.clock.getElapsedTime();
 
-    this.terrain.render(delta, time);
+    this.terrain.update(delta, time);
 
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
