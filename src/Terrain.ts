@@ -26,7 +26,7 @@ export class Terrain {
     this.chunks = new ChunkDictionary();
     this.chunksCount = 8;
     this.planet = new Planet(3);
-    this.water = new Mesh(new SphereBufferGeometry(this.planet.radius), new MeshStandardMaterial({ color: new Color('aqua'), opacity: 0.5, transparent: true }))
+    this.water = new Mesh(new SphereBufferGeometry(this.planet.radius, 16, 16), new MeshStandardMaterial({ color: new Color('aqua'), opacity: 0.5, transparent: true }))
     World.instance.scene.add(this.water);
 
     const now = Date.now()
