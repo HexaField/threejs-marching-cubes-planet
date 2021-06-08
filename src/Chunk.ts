@@ -27,7 +27,6 @@ export class Chunk {
     })
 
     Terrain.instance.chunkGenerator.generateChunk(this.chunkCoords).then((vertices: number[]) => {
-
       const geom = new BufferGeometry()
       geom.setAttribute("position", new BufferAttribute(new Float32Array(vertices), 3));
       geom.computeVertexNormals();

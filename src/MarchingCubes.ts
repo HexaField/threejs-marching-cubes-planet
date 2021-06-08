@@ -4,12 +4,13 @@ import triangulationTable from './MarchingCubesTables'
 
 export const createMarchingCubesGeometry = (field: number[], sideLength: number) => {
   const res = 1;
-  let vertices = [];
-  for (let i = 0; i < sideLength - 1; i++) {
+  let vertices: number[] = [];
+  let sideLength1 = sideLength - 1;
+  for (let i = 0; i < sideLength1; i++) {
     let x = i * res;
-    for (let j = 0; j < sideLength - 1; j++) {
+    for (let j = 0; j < sideLength1; j++) {
       let y = j * res;
-      for (let k = 0; k < sideLength - 1; k++) {
+      for (let k = 0; k < sideLength1; k++) {
         let z = k * res;
 
         let values = [
@@ -24,66 +25,53 @@ export const createMarchingCubesGeometry = (field: number[], sideLength: number)
         ];
 
         let edges = [
-          [
             lerp(x, x + res, (1 - values[0]) / (values[1] - values[0])),
             y,
-            z
-          ],
-          [
+            z,
+
             x + res,
             y,
-            lerp(z, z + res, (1 - values[1]) / (values[2] - values[1]))
-          ],
-          [
+            lerp(z, z + res, (1 - values[1]) / (values[2] - values[1])),
+
             lerp(x, x + res, (1 - values[3]) / (values[2] - values[3])),
             y,
-            z + res
-          ],
-          [
+            z + res,
+            
             x,
             y,
-            lerp(z, z + res, (1 - values[0]) / (values[3] - values[0]))
-          ],
-          [
+            lerp(z, z + res, (1 - values[0]) / (values[3] - values[0])),
+
             lerp(x, x + res, (1 - values[4]) / (values[5] - values[4])),
             y + res,
-            z
-          ],
-          [
+            z,
+
             x + res,
             y + res,
-            lerp(z, z + res, (1 - values[5]) / (values[6] - values[5]))
-          ],
-          [
+            lerp(z, z + res, (1 - values[5]) / (values[6] - values[5])),
+
             lerp(x, x + res, (1 - values[7]) / (values[6] - values[7])),
             y + res,
-            z + res
-          ],
-          [
+            z + res,
+
             x,
             y + res,
-            lerp(z, z + res, (1 - values[4]) / (values[7] - values[4]))
-          ],
-          [
+            lerp(z, z + res, (1 - values[4]) / (values[7] - values[4])),
+
             x,
             lerp(y, y + res, (1 - values[0]) / (values[4] - values[0])),
-            z
-          ],
-          [
+            z,
+
             x + res,
             lerp(y, y + res, (1 - values[1]) / (values[5] - values[1])),
-            z
-          ],
-          [
+            z,
+
             x + res,
             lerp(y, y + res, (1 - values[2]) / (values[6] - values[2])),
-            z + res
-          ],
-          [
+            z + res,
+
             x,
             lerp(y, y + res, (1 - values[3]) / (values[7] - values[3])),
             z + res
-          ]
         ];
 
         let state = getState(
@@ -96,17 +84,17 @@ export const createMarchingCubesGeometry = (field: number[], sideLength: number)
           Math.ceil(field[i + 1][j + 1][k + 1]),
           Math.ceil(field[i][j + 1][k + 1])
         );
-        if(isNaN(state)) {
-          // console.warn('state is NaN', state);
-          continue;
-        }
+        // if(isNaN(state)) {
+        //   // console.warn('state is NaN', state);
+        //   continue;
+        // }
         if(state > 255 || state < 0) { 
           // console.warn('state is invalid', state);
           continue;
         }
         for (let edgeIndex of triangulationTable[state]) {
           if (edgeIndex !== -1) {
-            vertices.push(edges[edgeIndex][0] / (sideLength - 1), edges[edgeIndex][1] / (sideLength - 1), edges[edgeIndex][2] / (sideLength - 1));
+            vertices.push(edges[edgeIndex * 3] / sideLength1, edges[edgeIndex * 3 + 1] / sideLength1, edges[edgeIndex * 3 + 2] / sideLength1);
           }
         }
       }
