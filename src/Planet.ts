@@ -1,8 +1,16 @@
-import { makeNoise3D } from "open-simplex-noise";
 import { Vector3 } from "three";
 import { clamp } from "three/src/math/MathUtils";
 import { PLANET_RADIUS, NOISE_SCALE, NOISE_HEIGHT_MULTIPLIER, NOISE_LAYERS } from "./Constants";
-const noise = makeNoise3D(Date.now());
+
+import { makeNoise3D } from "open-simplex-noise";
+const seed = 357890;
+const noise = makeNoise3D(seed);
+
+// import { makeNoise3D } from "fast-simplex-noise";
+// const noise = makeNoise3D();
+
+// import SimplexNoise from "simplex-noise";
+// const noise = new SimplexNoise();
 
 const vec3 = new Vector3();
 

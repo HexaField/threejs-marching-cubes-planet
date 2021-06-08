@@ -4,27 +4,33 @@ import { createMarchingCubesGeometry } from "./MarchingCubes";
 import { MessageQueue, receiveWorker } from "./MessageQueue";
 import { getPointOnPlanet } from "./Planet";
 
-const resolution = CHUNK_RESOLUTION;
-
 const generateChunk = ({ chunkCoords }) => {
+  let time = Date.now()
   const mapValues = []
-
-  for (let i = 0; i <= resolution; i++) {
+  for (let i = 0; i <= CHUNK_RESOLUTION; i++) {
     mapValues[i] = [];
-    for (let j = 0; j <= resolution; j++) {
+    for (let j = 0; j <= CHUNK_RESOLUTION; j++) {
       mapValues[i][j] = [];
-      for (let k = 0; k <= resolution; k++) {
-        mapValues[i][j][k] = getPointOnPlanet(i / (resolution - 1) + chunkCoords.x, j / (resolution - 1) + chunkCoords.y, k / (resolution - 1) + chunkCoords.z);
+      for (let k = 0; k <= CHUNK_RESOLUTION; k++) {
+        mapValues[i][j][k] = getPointOnPlanet(
+          i / (CHUNK_RESOLUTION - 1) + chunkCoords.x, 
+          j / (CHUNK_RESOLUTION - 1) + chunkCoords.y, 
+          k / (CHUNK_RESOLUTION - 1) + chunkCoords.z
+        );
       }
     }
   }
-  return createMarchingCubesGeometry(mapValues, resolution);
+  const noiseTime = Date.now() - time
+  time = Date.now()
+  const data = createMarchingCubesGeometry(mapValues, CHUNK_RESOLUTION);
+  // console.log('noise', noiseTime, 'cubes', Date.now() - time)
+  return data;
 }
 
 receiveWorker((messageQueue: MessageQueue) => {
   messageQueue.addEventListener(CHUNK_EVENTS.REQUEST_GENERATE, ({ detail: { uuid, params } }) => {
     const vertices = generateChunk(params);
-    messageQueue.sendEvent(CHUNK_EVENTS.RECEIVE_GENERATE, { vertices, uuid })
+    messageQueue.sendEvent(uuid, { vertices })
     messageQueue.sendQueue()
   })
 })

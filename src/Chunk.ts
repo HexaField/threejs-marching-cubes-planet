@@ -1,4 +1,5 @@
 import { BoxBufferGeometry, BufferAttribute, BufferGeometry, Color, DoubleSide, Mesh, MeshStandardMaterial, Vector3 } from "three";
+import { CHUNK_SCALE } from "./Constants";
 import { Terrain } from "./Terrain";
 import { World } from "./World";
 
@@ -14,7 +15,8 @@ export class Chunk {
     this.chunkCoords = chunkCoords;
 
     const chunkBorderWireframe = new Mesh(new BoxBufferGeometry(1, 1, 1), Chunk.wireframeMaterial);
-    chunkBorderWireframe.position.addScalar(0.5).add(chunkCoords);
+    chunkBorderWireframe.position.addScalar(0.5).add(chunkCoords).multiplyScalar(CHUNK_SCALE);
+    chunkBorderWireframe.scale.multiplyScalar(CHUNK_SCALE);
     chunkBorderWireframe.visible = false;
     World.instance.scene.add(chunkBorderWireframe);
 
@@ -31,7 +33,8 @@ export class Chunk {
       geom.computeVertexNormals();
 
       const chunkMesh = new Mesh(geom, Chunk.terrainMaterial);
-      chunkMesh.position.add(chunkCoords);
+      chunkMesh.position.add(chunkCoords).multiplyScalar(CHUNK_SCALE);
+      chunkMesh.scale.multiplyScalar(CHUNK_SCALE);
       World.instance.scene.add(chunkMesh);
     });
   }

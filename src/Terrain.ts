@@ -4,7 +4,7 @@ import { createWorker, MessageQueue } from "./MessageQueue";
 import { World } from "./World";
 // @ts-ignore
 import ChunkGeneratorWorker from './ChunkGenerator?worker';
-import { CHUNK_COUNT, PLANET_RADIUS } from "./Constants";
+import { CHUNK_COUNT, CHUNK_SCALE, PLANET_RADIUS } from "./Constants";
 import { CHUNK_EVENTS } from "./ChunkGeneratorEnums";
 import { generateUUID } from "three/src/math/MathUtils";
 
@@ -19,20 +19,34 @@ export class ChunkDictionary {
 }
 
 export class ChunkGenerator {
-  worker: MessageQueue;
+  workers: MessageQueue[];
   async initialise() {
-    this.worker = await createWorker(new ChunkGeneratorWorker, 3);
+    this.workers = await Promise.all([
+      createWorker(new ChunkGeneratorWorker),
+      createWorker(new ChunkGeneratorWorker),
+      createWorker(new ChunkGeneratorWorker),
+      createWorker(new ChunkGeneratorWorker),
+    ]);
+    this.workers.forEach((worker, i) => {
+      worker.id = i;
+    })
+  }
+  getWorker(): MessageQueue {
+    return this.workers.reduce((prevWorker, worker) => {
+      return prevWorker.activeTasks <= worker.activeTasks ? prevWorker : worker;
+    })
   }
   async generateChunk(chunkCoords: Vector3) {
+    const worker = this.getWorker();
     return new Promise<number[]>((resolve) => {
       const request_uuid = generateUUID();
-      this.worker.addEventListener(CHUNK_EVENTS.RECEIVE_GENERATE, (ev: { detail: { uuid, vertices } }) => {
-        if(ev.detail.uuid === request_uuid) {
-          resolve(ev.detail.vertices);
-        }
+      worker.addEventListener(request_uuid, (ev: { detail: { vertices } }) => {
+        worker.activeTasks--;
+        resolve(ev.detail.vertices);
       })
-      this.worker.sendEvent(CHUNK_EVENTS.REQUEST_GENERATE, { uuid: request_uuid, params: { chunkCoords } })
-      this.worker.sendQueue()
+      worker.sendEvent(CHUNK_EVENTS.REQUEST_GENERATE, { uuid: request_uuid, params: { chunkCoords } })
+      worker.sendQueue()
+      worker.activeTasks++;
     });
   }
 }
@@ -49,6 +63,7 @@ export class Terrain {
     this.chunks = new ChunkDictionary();
     this.water = new Mesh(new SphereBufferGeometry(PLANET_RADIUS, 16, 16), new MeshStandardMaterial({ color: new Color('aqua'), opacity: 0.5, transparent: true }))
     World.instance.scene.add(this.water);
+    this.water.scale.multiplyScalar(CHUNK_SCALE);
     this.generateChunks();
   }
 

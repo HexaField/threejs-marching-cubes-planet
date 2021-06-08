@@ -180,7 +180,7 @@ const INITIALISE_WORKER = 'INITIALISE_WORKER';
 const WORKER_INITIALISED = 'WORKER_INITIALISED';
 const WORKER_READY = 'WORKER_READY';
 
-export const createWorker = async (worker: Worker, config: any = {}): Promise<MessageQueue> => {
+export const createWorker = async (worker: Worker): Promise<MessageQueue> => {
   const messageQueue = new MessageQueue(worker)
   await new Promise<void>((resolve) => {
     messageQueue.once(INITIALISE_WORKER, () => {
@@ -192,6 +192,7 @@ export const createWorker = async (worker: Worker, config: any = {}): Promise<Me
     })
     messageQueue.sendQueue()
   })
+  messageQueue.activeTasks = 0;
   return messageQueue;
 }
 
