@@ -63,15 +63,15 @@ export class World {
     this.orbitControls.minDistance = 0.1;
     this.orbitControls.maxDistance = 500;
 
-    this.transformControls = new TransformControls(this.camera, this.renderer.domElement);
-    this.transformControls.addEventListener('dragging-changed', (event) => {
-      this.orbitControls.enabled = !event.value;
-    });
-    this.scene.add(this.transformControls);
+    // this.transformControls = new TransformControls(this.camera, this.renderer.domElement);
+    // this.transformControls.addEventListener('dragging-changed', (event) => {
+    //   this.orbitControls.enabled = !event.value;
+    // });
+    // this.scene.add(this.transformControls);
 
-    this.viewController = new Mesh(new BufferGeometry(), new MeshBasicMaterial());
-    this.scene.add(this.viewController);
-    this.transformControls.attach(this.viewController);
+    // this.viewController = new Mesh(new BufferGeometry(), new MeshBasicMaterial());
+    // this.scene.add(this.viewController);
+    // this.transformControls.attach(this.viewController);
 
     container.appendChild(this.renderer.domElement);
     window.addEventListener('resize', this.onWindowResize.bind(this));
