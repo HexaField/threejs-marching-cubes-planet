@@ -14,6 +14,7 @@
     "fast-simplex-noise": "^4.0.0",
     "open-simplex-noise": "^2.5.0",
     "simplex-noise": "^2.4.0",
-    "three": "^0.129.0"
+    "three": "^0.129.0",
+    "three-physx": "^0.0.32"
   }
 }

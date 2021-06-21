@@ -1,6 +1,6 @@
 import { Vector3 } from "three";
 import { clamp } from "three/src/math/MathUtils";
-import { PLANET_RADIUS, NOISE_SCALE, NOISE_HEIGHT_MULTIPLIER, NOISE_LAYERS } from "./Constants";
+import { PLANET_RADIUS, NOISE_SCALE, NOISE_HEIGHT_MULTIPLIER, NOISE_LAYERS } from "../../Constants";
 
 import { makeNoise3D } from "open-simplex-noise";
 const seed = 357890;

@@ -1,12 +1,13 @@
 import { Color, Mesh, MeshStandardMaterial, SphereBufferGeometry, Vector3 } from "three";
 import { Chunk } from "./Chunk";
-import { createWorker, MessageQueue } from "./MessageQueue";
-import { World } from "./World";
+import { createWorker, MessageQueue } from "../MessageQueue";
+import { World } from "../World";
 // @ts-ignore
-import ChunkGeneratorWorker from './ChunkGenerator?worker';
-import { CHUNK_COUNT, CHUNK_SCALE, PLANET_RADIUS } from "./Constants";
-import { CHUNK_EVENTS } from "./ChunkGeneratorEnums";
+import ChunkGeneratorWorker from './gen/ChunkGenerator?worker';
+import { CHUNK_COUNT, CHUNK_COUNT_TOTAL, CHUNK_SCALE, PLANET_RADIUS } from "../Constants";
+import { CHUNK_EVENTS } from "./gen/ChunkGeneratorEnums";
 import { generateUUID } from "three/src/math/MathUtils";
+import { Body, BodyType, PhysXInstance, SHAPES } from "three-physx";
 
 export class ChunkDictionary {
   chunks: Map<string, Chunk> = new Map<string, Chunk>()
@@ -55,7 +56,9 @@ export class Terrain {
   static instance: Terrain;
   chunks: ChunkDictionary;
   water: Mesh;
+  waterBody: Body;
   chunkGenerator: ChunkGenerator;
+  onGeneration: () => void;
 
   constructor() {
     Terrain.instance = this;
@@ -64,6 +67,29 @@ export class Terrain {
     this.water = new Mesh(new SphereBufferGeometry(PLANET_RADIUS, 16, 16), new MeshStandardMaterial({ color: new Color('aqua'), opacity: 0.5, transparent: true }))
     World.instance.scene.add(this.water);
     this.water.scale.multiplyScalar(CHUNK_SCALE);
+
+    const shape = {
+      shape: SHAPES.Sphere,
+      transform: { scale: new  Vector3(1, 1, 1) },
+      options: { radius: PLANET_RADIUS },
+      config: {
+        collisionLayer: 1 << 1,
+        collisionMask: 1 << 1
+      }
+    };
+
+    this.waterBody = new Body({
+      shapes: [shape],
+      type: BodyType.STATIC,
+      transform: {
+        translation: this.water.position,
+        scale: this.water.scale,
+      },
+
+    });
+
+    PhysXInstance.instance.addBody(this.waterBody);
+    
     this.generateChunks();
   }
 
@@ -72,15 +98,27 @@ export class Terrain {
     this.chunkGenerator = new ChunkGenerator();
     await this.chunkGenerator.initialise();
 
-    const halfSideLength = CHUNK_COUNT * 0.5;
-    for (let z = -halfSideLength; z < halfSideLength; z++) {
-      for (let y = -halfSideLength; y < halfSideLength; y++) {
-        for (let x = -halfSideLength; x < halfSideLength; x++) {
-          const pos = new Vector3(x, y, z);
-          this.chunks.set(pos, new Chunk(pos));
+    new Promise<void>((resolve) => {
+
+      let completed = 0;
+
+      const halfSideLength = CHUNK_COUNT * 0.5;
+      for (let z = -halfSideLength; z < halfSideLength; z++) {
+        for (let y = -halfSideLength; y < halfSideLength; y++) {
+          for (let x = -halfSideLength; x < halfSideLength; x++) {
+            const pos = new Vector3(x, y, z);
+            const newChunk = new Chunk(pos)
+            this.chunks.set(pos, newChunk);
+            newChunk.create().then(() => {
+              completed ++;
+              if(completed >= CHUNK_COUNT_TOTAL) resolve()
+            })
+          }
         }
       }
-    }
+    }).then(() => {
+      this.onGeneration()
+    })
   }
 
   update(delta, time) { 

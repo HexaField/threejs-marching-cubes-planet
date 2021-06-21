@@ -95,6 +95,11 @@ source-map-js@^0.6.2:
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-0.6.2.tgz#0bb5de631b41cfbda6cfba8bd05a80efdfd2385e"
   integrity sha512-/3GptzWzu0+0MBQFrDKzw/DvvMTUORvgY6k6jd/VS6iCR4RDTKWH6v6WPwQoUO8667uQEf9Oe38DxAYWY5F/Ug==
 
+three-physx@^0.0.32:
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/three-physx/-/three-physx-0.0.32.tgz#1bbd2109e94336cd867e7a102084c6b281971916"
+  integrity sha512-ZZkBruqNCO1m2n9oh3jt7/4qE8RmXB3eevUeoR7wMXJqO6atRN+V/kEJ2zVbecazuBF8WpQ8sw5CEE6TcmojLA==
+
 three@^0.129.0:
   version "0.129.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.129.0.tgz#f5e530bbc96eac5d5b4749cb5da886ef0d42f554"
