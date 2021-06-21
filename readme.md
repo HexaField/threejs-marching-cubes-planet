@@ -1,5 +1,10 @@
-An experiment learning about marching cubes and voxels.
+An experiment in learning voxels.
 
-Uses cubic chunks and webworker thread pool for an optimised and uninterrupted experience. Will soon utilise a sparse octree. Long term I want all the gen code to be WASM.
+https://voxel-planet.netlify.app/
 
-Demo: https://voxel-planet.netlify.app/
+- [x] Marching cubes
+- [x] Multithreaded webworker pool
+- [ ] PhysX Physics
+- [ ] Signed distance function (SDF)
+- [ ] Sparse voxel octree (SVO)
+- [ ] Implement in cC+ and compile to WASM
